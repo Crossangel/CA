@@ -1,0 +1,246 @@
+
+<!DOCTYPE html>
+    <html lang="en">
+    <head> 
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!--==================== UNICONS ====================-->
+        <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+        
+        <!--==================== SWIPER CSS ====================-->
+        <link rel="stylesheet" href="swiper-bundle.min.css?v=<?php echo time();?>">
+        
+        <!--==================== CSS ====================-->
+        <link rel="stylesheet" href="styles.css?v=<?php echo time();?>">
+        <link rel="icon" type="image/x-icon" href="logoslagi1.png">
+
+        <title>Computer Arithmetic Learning</title>
+    </head>
+    <body>
+        <!--==================== HEADER ====================-->
+        <header class="header" id="header">
+            <nav class="nav container">
+                <a href="#" class="nav__logo">Computer Arithmetic Learning</a>
+                <div class="nav__menu" id="nav-menu"> 
+                    <ul class="nav__list grid">
+                        <li class="nav__item">
+                            <a href="default.html" class="nav__link active-link">
+                                <i class="uli uil-estate nav__icon"></i>Home
+                            </a>
+                        </li>
+                        <li class="nav__item">
+                            <a href="#about" class="nav__link">
+                                <i class="uli uil-user nav__icon"></i>About
+                            </a>
+                        </li>
+                    </ul>
+                    <i class="uil uil-times nav__close" id="nav-close"></i>
+                </div>
+
+                <div class="nav__btns">
+                    <!--Theme change button-->
+                    <i class="uil uil-moon change-theme" id="theme-button"></i>
+
+                    <div class="nav__toggle" id="nav-toggle">
+                        <i class="uil uil-apps"></i>
+                    </div>
+                </div>
+            </nav>
+        </header>
+            <!--==================== HOME ====================-->
+            <div class="calculator">
+                <h1>Binary Arithmetic Calculator</h1>
+                <input type="number" id="num1" placeholder="Enter first number" required>
+                <input type="number" id="num2" placeholder="Enter second number" required>
+                
+                <select id="operation">
+                    <option value="add">Addition (+)</option>
+                    <option value="subtract">Subtraction (-)</option>
+                    <option value="multiply">Multiplication (×)</option>
+                    <option value="divide">Division (÷)</option>
+                </select>
+                
+                <button onclick="calculate()">Calculate</button>
+                
+                <h2 id="result"></h2>
+                <h3>Process:</h3>
+                <pre id="process"></pre>
+            </div>
+        
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f4;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100vh;
+                    margin: 0;
+                }
+                #process{
+                    color: black;
+                }
+                .calculator {
+                    background: white;
+                    padding: 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                    text-align: center;
+                }
+                
+                input, select, button {
+                    margin: 10px 0;
+                    padding: 10px;
+                    width: 80%;
+                    border: 1px solid #ccc;
+                    border-radius: 4px;
+                }
+                
+                button {
+                    background-color: #28a745;
+                    color: white;
+                    border: none;
+                    cursor: pointer;
+                }
+                
+            </style>
+            <script>
+                function toBinary(num, bits = 4) {
+                    return (num >>> 0).toString(2).padStart(bits, '0'); // Convert to binary and pad with zeros
+                }
+                
+                function fromBinary(binary) {
+                    return parseInt(binary, 2); // Convert binary back to decimal
+                }
+                
+                function boothMultiply(multiplicand, multiplier) {
+                    let process = `<tr><th>Step</th><th>A</th><th>Q</th><th>Qn</th><th>Action</th></tr>`;
+                    let m = multiplicand;
+                    let q = multiplier;
+                    let qn = 0; // Previous bit of Q
+                    let mNeg = (~m + 1) >>> 0; // Two's complement of m
+                    let count = 4; // Number of bits
+                
+                    let a = 0; // Accumulator
+                    let result = 0; // Result
+                
+                    for (let step = 0; step < 5; step++) {
+                        process += `<tr><td>${step}</td><td>${toBinary(a, 8)}</td><td>${toBinary(q, 4)}</td><td>${qn}</td><td></td></tr>`;
+                        if ((q & 1) === 1 && qn === 0) { // Q0 Qn = 01
+                            a = (a + m) >>> 0; // A = A + M
+                            process += `<tr><td>${step}</td><td>${toBinary(a, 8)}</td><td>${toBinary(q, 4)}</td><td>${qn}</td><td>A = A + M</td></tr>`;
+                        } else if ((q & 1) === 0 && qn === 1) { // Q0 Qn = 10
+                            a = (a + mNeg) >>> 0; // A = A - M
+                            process += `<tr><td>${step}</td><td>${toBinary(a, 8)}</td><td>${toBinary(q, 4)}</td><td>${qn}</td><td>A = A - M</td></tr>`;
+                        }
+                        // Arithmetic right shift
+                        let bit = q & 1; // Get the last bit of Q
+                        q = (a & 1) << (count - 1) | (q >>> 1); // Shift Q right
+                        a = (a >>> 1) >>> 0; // Shift A right
+                        qn = bit; // Update Qn
+                    }
+                    result = (a << 4) | q; // Combine A and Q
+                    process += `<tr><td>Final</td><td>${toBinary(a, 8)}</td><td>${toBinary(q, 4)}</td><td>${qn}</td><td>Result = A << 4 | Q</td></tr>`;
+                    return { result, process };
+                }
+                
+                function boothDivide(dividend, divisor) {
+                    let process = `<tr><th>Step</th><th>A</th><th>Q</th><th>Qn</th><th>Action</th></tr>`;
+                    let q = dividend;
+                    let m = divisor;
+                    let mNeg = (~m + 1) >>> 0; // Two's complement of m
+                    let qn = 0; // Previous bit of Q
+                    let count = 4; // Number of bits
+                
+                    let a = 0; // Accumulator
+                    let quotient = 0; // Quotient
+                
+                    for (let step = 0; step < 5; step++) {
+                        process += `<tr><td>${step}</td><td>${toBinary(a, 8)}</td><td>${toBinary(q, 4)}</td><td>${qn}</td><td></td></tr>`;
+                        // Subtract M from A
+                        a = (a + mNeg) >>> 0;
+                        if (a < 0) { // If A < 0
+                            a = (a + m) >>> 0; // Restore A
+                            quotient = (quotient << 1) | 0; // Q = Q0 0
+                            process += `<tr><td>${step}</td><td>${toBinary(a, 8)}</td><td>${toBinary(q, 4)}</td><td>${qn}</td><td>A = A + M (Restore)</td></tr>`;
+                        } else {
+                            quotient = (quotient << 1) | 1; // Q = Q0 1
+                            process += `<tr><td>${step}</td><td>${toBinary(a, 8)}</td><td>${toBinary(q, 4)}</td><td>${qn}</td><td>A = A - M</td></tr>`;
+                        }
+                        // Arithmetic right shift
+                        let bit = q & 1; // Get the last bit of Q
+                        q = (a & 1) << (count - 1) | (q >>> 1); // Shift Q right
+                        a = (a >>> 1) >>> 0; // Shift A right
+                        qn = bit; // Update Qn
+                    }
+                    process += `<tr><td>Final</td><td>${toBinary(a, 8)}</td><td>${toBinary(quotient, 4)}</td><td>${qn}</td><td>Final Quotient</td></tr>`;
+                    return { quotient, remainder: a, process };
+                }
+                
+                function calculate() {
+                    const num1 = parseInt(document.getElementById('num1').value);
+                    const num2 = parseInt(document.getElementById('num2').value);
+                    const operation = document.getElementById('operation').value;
+                    let result;
+                    let process = '';
+                
+                    const binaryNum1 = toBinary(num1);
+                    const binaryNum2 = toBinary(num2);
+                    
+                    process += `<table border="1"><tr><th>Binary Representation</th></tr>`;
+                    process += `<tr><td>${num1} (Decimal) = ${binaryNum1} (Binary)</td></tr>`;
+                    process += `<tr><td>${num2} (Decimal) = ${binaryNum2} (Binary)</td></tr></table><br>`;
+                
+                    switch (operation) {
+                        case 'add':
+                            result = num1 + num2;
+                            process += `<table border="1"><tr><th>Addition</th></tr>`;
+                            process += `<tr><td>${binaryNum1} + ${binaryNum2} = ${toBinary(result)} (${(result)}) (Binary)</td></tr></table>`;
+                            break;
+                        case 'subtract':
+                            result = num1 - num2;
+                            process += `<table border="1"><tr><th>Subtraction</th></tr>`;
+                            process += `<tr><td>${binaryNum1} - ${binaryNum2} = ${toBinary(result)} (Binary)</td></tr></table>`;
+                            break;
+                        case 'multiply':
+                            const multiplicationResult = boothMultiply(num1, num2);
+                            result = multiplicationResult.result;
+                            process += `<table border="1"><tr><th>Multiplication</th></tr>`;
+                            process += multiplicationResult.process;
+                            process += `</table>`;
+                            break;
+                        case 'divide':
+                            if (num2 !== 0) {
+                                const divisionResult = boothDivide(num1, num2);
+                                result = divisionResult.quotient;
+                                process += `<table border="1"><tr><th>Division</th></tr>`;
+                                process += divisionResult.process;
+                                process += `</table>`;
+                            } else {
+                                result = 'Error: Division by zero';
+                                process += `<table border="1"><tr><th>Error</th></tr>`;
+                                process += `<tr><td>Error: Division by zero</td></tr></table>`;
+                            }
+                            break;
+                        default:
+                            result = 'Invalid operation';
+                    }
+                
+                    document.getElementById('result').innerHTML = `Result: ${result}`;
+                    document.getElementById('process').innerHTML = process;
+                }
+            </script>
+        <!--==================== SWIPER JS ====================-->
+        <script src="swiper-bundle.min.js"></script>
+
+        <!--==================== MAIN JS ====================-->
+        <script src="main.js"></script>
+
+        <script type="text/javascript"> 
+            function submitform() {   
+                document.myform.submit();
+            } 
+        </script> 
+    </body>
+</html>

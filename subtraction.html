@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Two's Complement Converter</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/wingcss"/>
+    <link rel="stylesheet" href="https://grahn.us/css/style.css"/>
+    <script src="https://kit.fontawesome.com/42e67c05e1.js"></script>
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        h5 {
+            text-align: center;
+            color: #666;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 1rem;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            transition: border 0.3s;
+        }
+        input[type="number"]:focus {
+            border: 2px solid #007bff;
+        }
+        #convert {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        #convert:hover {
+            transform: scale(1.05);
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+        .back-button {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            display: block;
+            margin: 20px auto;
+            width: 150px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .back-button:hover {
+            transform: scale(1.05);
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Two's Complement Converter</h1>
+        <h5>Enter a decimal number and bit length to convert to two's complement format.</h5>
+
+        <form id="twosComplementForm">
+            <div class="form-group">
+                <input type="number" name="decimal" id="decimal" placeholder="Enter Decimal Number" required />
+            </div>
+            <div class="form-group">
+                <input type="number" name="bitLength" id="bitLength" placeholder="Enter Bit Length" required />
+            </div>
+            <div class="form-group">
+                <button type="button" id="convert">Convert</button>
+            </div>
+        </form>
+
+        <div class="result" id="resultDisplay"></div>
+        <button class="back-button" onclick="window.location.href='default.html'">Back to Home</button>
+    </div>
+
+    <script>
+        document.getElementById("convert").addEventListener("click", function () {
+            const decimal = parseInt(document.getElementById("decimal").value);
+            const bitLength = parseInt(document.getElementById("bitLength").value);
+
+            if (isNaN(decimal) || isNaN(bitLength) || bitLength <= 0) {
+                alert("Please enter valid numbers.");
+                return;
+            }
+
+            const twosComplementBinary = convertToTwosComplement(decimal, bitLength);
+            const resultDiv = document.getElementById("resultDisplay");
+
+            resultDiv.innerHTML = `
+                Decimal: ${decimal}<br>
+                Bit Length: ${bitLength}<br>
+                Two's Complement: ${twosComplementBinary} (Binary)
+            `;
+        });
+
+        function convertToTwosComplement(number, bitLength) {
+            if (number < 0) {
+                let binary = Math.abs(number).toString(2);
+                binary = binary.padStart(bitLength, '0');
+                let inverted = binary.replace(/0/g, 'x').replace(/1/g, '0').replace(/x/g, '1');
+                let twosComplement = (parseInt(inverted, 2) + 1).toString(2);
+                return twosComplement.padStart(bitLength, '0').slice(-bitLength);
+            } else {
+                return number.toString(2).padStart(bitLength, '0').slice(-bitLength);
+            }
+        }
+    </script>
+
+</body>
+</html>

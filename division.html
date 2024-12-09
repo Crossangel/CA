@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booth's Algorithm Calculator</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #4CAF50;
+        }
+
+        .form-section {
+            background: #fff;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        input[type="number"] {
+            padding: 8px;
+            width: 120px;
+            margin: 0 10px 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #results {
+            width: 90%;
+            margin: 20px auto;
+            background: white;
+            border-collapse: collapse;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #results th, #results td {
+            border: 1px solid #ddd;
+            text-align: center;
+            padding: 8px;
+        }
+
+        #results th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+
+        #finalResult {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 20px;
+            padding: 10px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @media (max-width: 768px) {
+            .form-section, #finalResult {
+                padding: 15px;
+            }
+
+            input[type="number"] {
+                width: 100%;
+                margin: 10px 0;
+            }
+
+            button {
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            #results {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Booth's Algorithm Calculator</h1>
+    <div class="form-section">
+        <h2>Multiplication</h2>
+        <label for="factor1">Factor 1: </label>
+        <input type="number" id="factor1" name="factor1" placeholder="Enter Factor 1">
+        <label for="factor2">Factor 2: </label>
+        <input type="number" id="factor2" name="factor2" placeholder="Enter Factor 2">
+        <button name="multiply">Calculate Multiplication</button>
+    </div>
+    <div class="form-section">
+        <h2>Division</h2>
+        <label for="dividend">Dividend: </label>
+        <input type="number" id="dividend" name="dividend" placeholder="Enter Dividend">
+        <label for="divisor">Divisor: </label>
+        <input type="number" id="divisor" name="divisor" placeholder="Enter Divisor">
+        <button name="divide">Calculate Division</button>
+    </div>
+    <table id="results">
+        <button class="back-button" onclick="window.location.href='default.html'">Back to Home</button>
+        <thead>
+            <tr>
+                <th>A</th>
+                <th>Q</th>
+                <th>Q1 / M</th>
+                <th>Log</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div id="finalResult"></div>
+
+    <script>
+        $(document).ready(function () {
+            $('button[name="multiply"]').click(function (e) {
+                e.preventDefault();
+                calculateMultiplication();
+            });
+
+            $('button[name="divide"]').click(function (e) {
+                e.preventDefault();
+                calculateDivision();
+            });
+        });
+
+        function calculateMultiplication() {
+            const results = $('#results tbody');
+            $('#finalResult').html('');
+            results.html('');
+
+            const factor1 = parseInt($('#factor1').val());
+            const factor2 = parseInt($('#factor2').val());
+
+            if (isNaN(factor1) || isNaN(factor2)) {
+                alert('Please enter valid integers.');
+                return;
+            }
+
+            if (factor1 === 0 || factor2 === 0) {
+                $('#finalResult').html('Final Result: 0 (Binary), 0 (Decimal)');
+                return;
+            }
+
+            const bitLength = Math.max(
+                Math.ceil(Math.log2(Math.abs(factor1) + 1)),
+                Math.ceil(Math.log2(Math.abs(factor2) + 1))
+            ) + 1;
+
+            let A = pad(0, bitLength);
+            let Q = twosComplement(factor2, bitLength);
+            let Q1 = '0';
+            const M = twosComplement(factor1, bitLength);
+
+            writeRow(results, A, Q, Q1, 'Initialization');
+
+            for (let i = 0; i < bitLength; i++) {
+                if (Q[Q.length - 1] === '1' && Q1 === '0') {
+                    A = addBinary(A, twosComplement(-factor1, bitLength));
+                    writeRow(results, A, Q, Q1, 'A = A - M');
+                } else if (Q[Q.length - 1] === '0' && Q1 === '1') {
+                    A = addBinary(A, twosComplement(factor1, bitLength));
+                    writeRow(results, A, Q, Q1, 'A = A + M');
+                }
+
+                Q1 = Q[Q.length - 1];
+                Q = A[A.length - 1] + Q.slice(0, -1);
+                A = A[0] + A.slice(0, -1);
+                writeRow(results, A, Q, Q1, 'Arithmetic Right Shift');
+            }
+
+            const finalBinary = A + Q;
+            const finalDecimal = parseTwosComplement(finalBinary);
+
+            $('#finalResult').html(
+                `Final Result: ${finalBinary} (Binary), ${finalDecimal} (Decimal)`
+            );
+        }
+
+        function calculateDivision() {
+            const results = $('#results tbody');
+            $('#finalResult').html('');
+            results.html('');
+
+            const dividend = parseInt($('#dividend').val());
+            const divisor = parseInt($('#divisor').val());
+
+            if (isNaN(dividend) || isNaN(divisor)) {
+                alert('Please enter valid integers.');
+                return;
+            }
+            if (divisor === 0) {
+                alert('Division by zero is not allowed.');
+                return;
+            }
+
+            const bitLength = Math.max(
+                Math.ceil(Math.log2(Math.abs(dividend) + 1)),
+                Math.ceil(Math.log2(Math.abs(divisor) + 1))
+            ) + 1;
+
+            let A = pad(0, bitLength);
+            let Q = twosComplement(dividend, bitLength);
+            const M = twosComplement(divisor, bitLength);
+
+            writeRow(results, A, Q, M, 'Initialization');
+
+            for (let i = 0; i < bitLength; i++) {
+                A = A.slice(1) + Q[0];
+                Q = Q.slice(1) + '0';
+                writeRow(results, A, Q, M, 'Left Shift');
+
+                const tempA = addBinary(A, twosComplement(-parseInt(M, 2), bitLength));
+                if (tempA[0] === '1') {
+                    writeRow(results, tempA, Q, M, 'A - M (Negative)');
+                } else {
+                    A = tempA;
+                    Q = Q.slice(0, -1) + '1';
+                    writeRow(results, A, Q, M, 'A - M (Positive)');
+                }
+            }
+
+            const finalQuotient = parseTwosComplement(Q);
+            const finalRemainder = parseTwosComplement(A);
+
+            $('#finalResult').html(
+                `Final Result: Quotient = ${Q} (Binary), ${finalQuotient} (Decimal), Remainder = ${A} (Binary), ${finalRemainder} (Decimal)`
+            );
+        }
+
+        function twosComplement(number, bitLength) {
+            if (number < 0) {
+                let bin = Math.abs(number).toString(2);
+                bin = pad(bin, bitLength);
+                bin = bin.replace(/0/g, 'x').replace(/1/g, '0').replace(/x/g, '1');
+                return pad((parseInt(bin, 2) + 1).toString(2), bitLength);
+            } else {
+                return pad(number.toString(2), bitLength);
+            }
+        }
+
+        function parseTwosComplement(binary) {
+            const isNegative = binary[0] === '1';
+            if (isNegative) {
+                const inverted = binary
+                    .split('')
+                    .map((bit) => (bit === '1' ? '0' : '1'))
+                    .join('');
+                return -(parseInt(inverted, 2) + 1);
+            }
+            return parseInt(binary, 2);
+        }
+
+        function addBinary(bin1, bin2) {
+            const sum = (parseInt(bin1, 2) + parseInt(bin2, 2)).toString(2);
+            return pad(sum, bin1.length).slice(-bin1.length);
+        }
+
+        function writeRow(table, a, q, m, log) {
+            table.append(
+                `<tr><td>${a}</td><td>${q}</td><td>${m}</td><td>${log}</td></tr>`
+            );
+        }
+
+        function pad(number, length) {
+            let str = number.toString();
+            while (str.length < length) {
+                str = '0' + str;
+            }
+            return str;
+        }
+    </script>
+</body>
+</html>

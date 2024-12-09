@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+    <html lang="en">
+    <head> 
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!--==================== UNICONS ====================-->
+        <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+        
+        <!--==================== SWIPER CSS ====================-->
+        <link rel="stylesheet" href="swiper-bundle.min.css?v=<?php echo time();?>">
+        
+        <!--==================== CSS ====================-->
+        <link rel="stylesheet" href="styles.css?v=<?php echo time();?>">
+        <link rel="icon" type="image/x-icon" href="logoslagi1.png">
+
+        <title>Computer Arithmetic Learning</title>
+    </head>
+    <body>
+        <!--==================== HEADER ====================-->
+        <header class="header" id="header">
+            <nav class="nav container">
+                <a href="#" class="nav__logo">Computer Arithmetic Learning</a>
+                <div class="nav__menu" id="nav-menu"> 
+                    <ul class="nav__list grid">
+                        <li class="nav__item">
+                            <a href="default.html" class="nav__link active-link">
+                                <i class="uli uil-estate nav__icon"></i>Home
+                            </a>
+                        </li>
+                        <li class="nav__item">
+                            <a href="#about" class="nav__link">
+                                <i class="uli uil-user nav__icon"></i>About
+                            </a>
+                        </li>
+                    </ul>
+                    <i class="uil uil-times nav__close" id="nav-close"></i>
+                </div>
+
+                <div class="nav__btns">
+                    <!--Theme change button-->
+                    <i class="uil uil-moon change-theme" id="theme-button"></i>
+
+                    <div class="nav__toggle" id="nav-toggle">
+                        <i class="uil uil-apps"></i>
+                    </div>
+                </div>
+            </nav>
+        </header>
+            <!--==================== HOME ====================-->
+
+            <div class="containers">
+                <div class="row">
+                    <a href="addition.html" class="box">Addition</a>
+                    <a href="subtraction.html" class="box">Subtraction</a>
+                </div>
+                <div class="row">
+                    <a href="multiplication.html" class="box">Multiplication</a>
+                    <a href="division.html" class="box">Division</a>
+                </div>
+                <div class="row">
+                    <a href="more_operations.html" class="full-width-box">Two's Compliment</a> <!-- Full width box -->
+                </div>
+            </div>
+  <style>
+    .containers {
+        display: flex;
+        flex-direction: column;
+        width: 100%; /* Full width */
+        max-width: 600px; /* Max width for better layout */
+        margin: 120px auto; /* Center the container */
+    }
+    
+    .row {
+        display: flex;
+        justify-content: space-between; /* Space between boxes */
+        margin-bottom: 10px; /* Space between rows */
+    }
+    
+    .box {
+        width: 48%; /* Adjust width to fit two boxes in a row */
+        height: 200px;
+        border: 2px solid black;
+        background-color: #f0f0f0; /* Light background color */
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        transition: transform 0.3s; /* Smooth hover effect */
+        color: black;
+        text-align: center;
+        line-height: 200px; /* Center text vertically */
+        font-size: 18px; /* Increase font size */
+    }
+
+    #ok{
+        width: 48%;
+        height: 100px;
+        background-color: aqua;
+    }
+
+    .box:hover {
+        transform: scale(1.05); /* Scale effect on hover */
+    }
+
+    .full-width-box {
+        width: 100%; /* Full width box */
+        height: 100px; /* Set height for consistency */
+        border: 2px solid black;
+        background-color: #e0e0e0; /* Different background color */
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        text-align: center;
+        line-height: 100px; /* Center text vertically */
+        font-size: 18px; /* Increase font size */
+        transition: transform 0.3s;
+    }
+    .full-width-box:hover {
+        transform: scale(1.05); /* Scale effect on hover */
+    }
+  </style>
+        <!--==================== SWIPER JS ====================-->
+        <script src="swiper-bundle.min.js"></script>
+
+        <!--==================== MAIN JS ====================-->
+        <script src="main.js"></script>
+
+        <script type="text/javascript"> 
+            function submitform() {   
+                document.myform.submit();
+            } 
+        </script> 
+    </body>
+</html>
