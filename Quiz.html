@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Page</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* General styles */
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      color: #fff;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 600px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      padding: 20px;
+      text-align: center;
+      color: #333;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      padding: 10px 20px;
+      box-sizing: border-box;
+    }
+
+    .nav-buttons a, .dark-mode-toggle {
+      text-decoration: none;
+      font-size: 1rem;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      color: white;
+      background: #333;
+    }
+
+    .nav-buttons a:hover, .dark-mode-toggle:hover {
+      background: #444;
+    }
+
+    #question-box {
+      padding: 15px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      background: #f9f9f9;
+      margin-bottom: 20px;
+    }
+
+    #question {
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+    }
+
+    #answers button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      font-size: 1rem;
+      background: #f8f9fa;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      color: #333;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    #answers button:hover {
+      background: #f1f1f1;
+      transform: scale(1.02);
+    }
+
+    #progress-bar {
+      width: 100%;
+      height: 10px;
+      background: #e0e0e0;
+      border-radius: 5px;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+
+    #progress-bar div {
+      width: 0;
+      height: 100%;
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      transition: width 0.3s ease;
+    }
+
+    #score-container {
+      display: none;
+    }
+
+    .scrollable {
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 15px;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 10px;
+    }
+
+    .grid-item {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #f9f9f9;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .grid-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .correct-answer {
+      color: #2ecc71;
+      font-weight: bold;
+    }
+
+    .user-answer {
+      color: #e74c3c;
+      font-weight: bold;
+    }
+
+    .dark-mode {
+      background: #222;
+      color: white;
+    }
+
+    .dark-mode .container {
+      background: #333;
+      color: white;
+    }
+
+    .dark-mode #answers button {
+      background: #444;
+      color: white;
+    }
+
+    .dark-mode #answers button:hover {
+      background: #555;
+    }
+
+    .dark-mode #question-box {
+      background: #444;
+      border-color: #555;
+      color: white;
+    }
+
+    .dark-mode .scrollable {
+      background: #333;
+      color: white;
+      border-color: #444;
+    }
+
+    .dark-mode .scrollable .grid-item {
+      background: #444;
+      border-color: #555;
+      color: white;
+    }
+
+    #confirmation-box {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 400px;
+      padding: 20px;
+      background: #fff;
+      color: #333;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      text-align: center;
+    }
+
+    #confirmation-box button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #confirmation-box button.confirm {
+      background: #6a11cb;
+      color: white;
+    }
+
+    #confirmation-box button.cancel {
+      background: #ccc;
+      color: #333;
+    }
+
+    #restart-button {
+      padding: 10px 20px;
+      background: #6a11cb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    #restart-button:hover {
+      background: #2575fc;
+    }
+  </style>
+</head>
+<body>
+  <div class="nav-buttons">
+    <a href="default.html">Back</a>
+    <button class="dark-mode-toggle" id="dark-mode-toggle">☀️</button>
+  </div>
+
+  <div class="container">
+    <h1>Computer Arithmetic Quiz</h1>
+    <div id="progress-bar"><div></div></div>
+    <div id="quiz-container">
+      <div id="question-box">
+        <p id="question"></p>
+      </div>
+      <div id="answers"></div>
+    </div>
+    <div id="score-container">
+      <h2>Your Score</h2>
+      <p id="score"></p>
+      <h3 id="incorrect-heading" style="display: none;">Incorrect Questions</h3>
+      <div class="scrollable">
+        <div class="grid-container" id="incorrect-questions"></div>
+      </div>
+      <button id="restart-button">Restart Quiz</button>
+    </div>
+  </div>
+
+  <div id="confirmation-box">
+    <p id="confirmation-message"></p>
+    <button class="confirm" id="confirm-yes">Confirm</button>
+    <button class="cancel" id="confirm-no">Cancel</button>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "If 1101 (binary) is divided by 11 (binary), what is the quotient in decimal?",
+        answers: ["5", "6", "7", "8"], 
+        correct: "6"
+      },
+      {
+        question: "What is the two's complement of the binary number 101101?",
+        answers: ["010011", "010010", "110011", "110010"], 
+        correct: "010011"
+      },
+      {
+        question: "Perform the binary addition: 1101 + 1011. What is the result?",
+        answers: ["10100", "10010", "11000", "11110"], 
+        correct: "11000"
+      },
+      {
+        question: "A binary floating-point number 1.101 × 2^3 is normalized. What is its equivalent in decimal?",
+        answers: ["13.25", "13.5", "14.25", "14.5"], 
+        correct: "13.25"
+      },
+      {
+        question: "What is the hexadecimal representation of the binary number 110110111011?",
+        answers: ["DBB", "BDB", "DDB", "BBB"], 
+        correct: "DBB"
+      },
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    const incorrectQuestions = [];
+    const incorrectQuestionsElement = document.getElementById("incorrect-questions");
+    const questionElement = document.getElementById("question");
+    const answersElement = document.getElementById("answers");
+    const progressBar = document.querySelector("#progress-bar div");
+    const confirmationBox = document.getElementById("confirmation-box");
+    const confirmationMessage = document.getElementById("confirmation-message");
+    const confirmYes = document.getElementById("confirm-yes");
+    const confirmNo = document.getElementById("confirm-no");
+    const scoreContainer = document.getElementById("score-container");
+    const incorrectHeading = document.getElementById("incorrect-heading");
+    const restartButton = document.getElementById("restart-button");
+
+    function loadQuestion() {
+      const currentQuestion = questions[currentQuestionIndex];
+      questionElement.textContent = currentQuestion.question;
+      answersElement.innerHTML = "";
+
+      currentQuestion.answers.forEach(answer => {
+        const button = document.createElement("button");
+        button.textContent = answer;
+        button.onclick = () => showConfirmation(answer);
+        answersElement.appendChild(button);
+      });
+
+      progressBar.style.width = `${((currentQuestionIndex + 1) / questions.length) * 100}%`;
+    }
+
+    function showConfirmation(selectedAnswer) {
+      confirmationMessage.textContent = `You selected: ${selectedAnswer}. Are you sure?`;
+      confirmationBox.style.display = "block";
+
+      confirmYes.onclick = () => {
+        confirmationBox.style.display = "none";
+        handleAnswer(selectedAnswer);
+      };
+
+      confirmNo.onclick = () => {
+        confirmationBox.style.display = "none";
+      };
+    }
+
+    function handleAnswer(selectedAnswer) {
+      const currentQuestion = questions[currentQuestionIndex];
+      if (selectedAnswer === currentQuestion.correct) {
+        score++;
+      } else {
+        incorrectQuestions.push({
+          question: currentQuestion.question,
+          correctAnswer: currentQuestion.correct,
+          userAnswer: selectedAnswer
+        });
+      }
+
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+        loadQuestion();
+      } else {
+        showScore();
+      }
+    }
+
+    function showScore() {
+      scoreContainer.style.display = "block";
+      questionElement.parentElement.style.display = "none";
+      answersElement.style.display = "none";
+      document.getElementById("score").textContent = `${score} / ${questions.length}`;
+
+      if (incorrectQuestions.length > 0) {
+        incorrectHeading.style.display = "block";
+        incorrectQuestionsElement.innerHTML = "";
+        incorrectQuestions.forEach(({ question, correctAnswer, userAnswer }) => {
+          const div = document.createElement("div");
+          div.classList.add("grid-item");
+          div.innerHTML = `<p>${question}</p>
+                           <p class="correct-answer">Correct Answer: ${correctAnswer}</p>
+                           <p class="user-answer">Your Answer: ${userAnswer}</p>`;
+          incorrectQuestionsElement.appendChild(div);
+        });
+      } else {
+        incorrectHeading.style.display = "none";
+      }
+    }
+
+    restartButton.onclick = () => {
+      currentQuestionIndex = 0;
+      score = 0;
+      incorrectQuestions.length = 0;
+      scoreContainer.style.display = "none";
+      questionElement.parentElement.style.display = "block";
+      answersElement.style.display = "block";
+      loadQuestion();
+    };
+
+    // Toggle Dark Mode
+    document.getElementById("dark-mode-toggle").addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+    });
+
+    // Start Quiz
+    loadQuestion();
+  </script>
+</body>
+</html>

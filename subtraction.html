@@ -2,143 +2,235 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Two's Complement Converter</title>
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/wingcss"/>
-    <link rel="stylesheet" href="https://grahn.us/css/style.css"/>
-    <script src="https://kit.fontawesome.com/42e67c05e1.js"></script>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subtraction Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f8f9fa;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1e293b, #4b5563);
+            color: #f3f4f6;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
+
         .container {
-            max-width: 800px;
-            margin: auto;
-            background: white;
+            background: #2d3748;
+            border: 1px solid #4a5568;
+            border-radius: 12px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+            max-width: 420px;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
+
         h1 {
+            font-size: 1.8rem;
+            color: #edf2f7;
+            margin-bottom: 10px;
             text-align: center;
-            color: #333;
         }
-        h5 {
+
+        p {
+            font-size: 0.9rem;
+            color: #cbd5e0;
+            margin-bottom: 20px;
             text-align: center;
-            color: #666;
         }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
         .form-group {
             display: flex;
             flex-direction: column;
-            margin-bottom: 1rem;
         }
+
         input[type="number"] {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            transition: border 0.3s;
+            width: 94%;
+            padding: 12px;
+            font-size: 1rem;
+            border: 1px solid #4a5568;
+            border-radius: 8px;
+            background: #1e293b;
+            color: #f3f4f6;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
+
         input[type="number"]:focus {
-            border: 2px solid #007bff;
+            border-color: #63b3ed;
+            box-shadow: 0 0 8px rgba(99, 179, 237, 0.5);
+            outline: none;
         }
-        #convert {
-            background-color: #007bff;
-            color: white;
+
+        button {
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: 600;
             border: none;
-            padding: 10px;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
-        #convert:hover {
-            transform: scale(1.05);
-            background-color: #0056b3;
+
+        #calculate {
+            background: #3182ce;
+            color: #ffffff;
         }
+
+        #calculate:hover {
+            background: #2b6cb0;
+            transform: translateY(-2px);
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            font-size: 1rem;
+            border-bottom: 1px solid #4a5568;
+        }
+
+        th {
+            background-color: #4a5568;
+            color: #edf2f7;
+            font-weight: 600;
+        }
+
+        td {
+            background-color: #1e293b;
+            color: #e2e8f0;
+        }
+
         .result {
             margin-top: 20px;
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            font-size: 1rem;
             text-align: center;
-            font-size: 1.2em;
         }
+
         .back-button {
-            background-color: #6c757d;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 4px;
+            background: #4a5568;
+            color: #f3f4f6;
+            padding: 10px 15px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 8px;
             cursor: pointer;
-            text-align: center;
-            display: block;
-            margin: 20px auto;
-            width: 150px;
-            transition: background-color 0.3s, transform 0.3s;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            align-self: flex-start;
         }
+
         .back-button:hover {
-            transform: scale(1.05);
-            background-color: #5a6268;
+            background: #2d3748;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            p {
+                font-size: 0.85rem;
+            }
+
+            input[type="number"],
+            button {
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <h1>Two's Complement Converter</h1>
-        <h5>Enter a decimal number and bit length to convert to two's complement format.</h5>
+        <h1>Subtraction Calculator</h1>
+        <p>Perform binary subtraction of two decimal numbers.</p>
 
-        <form id="twosComplementForm">
+        <form id="calcForm">
             <div class="form-group">
-                <input type="number" name="decimal" id="decimal" placeholder="Enter Decimal Number" required />
+                <input type="number" id="factor1" placeholder="Enter First Decimal Number" required />
             </div>
             <div class="form-group">
-                <input type="number" name="bitLength" id="bitLength" placeholder="Enter Bit Length" required />
+                <input type="number" id="factor2" placeholder="Enter Second Decimal Number" required />
             </div>
-            <div class="form-group">
-                <button type="button" id="convert">Convert</button>
-            </div>
+            <button type="submit" id="calculate">Calculate</button>
         </form>
 
-        <div class="result" id="resultDisplay"></div>
-        <button class="back-button" onclick="window.location.href='default.html'">Back to Home</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>Decimal</th>
+                    <th>Binary</th>
+                </tr>
+            </thead>
+            <tbody id="binarySteps"></tbody>
+        </table>
+
+        <div class="result" id="finalResult" style="display: none;"></div>
+
+        <button class="back-button" onclick="window.location.href='Option.html'">Back</button>
     </div>
 
     <script>
-        document.getElementById("convert").addEventListener("click", function () {
-            const decimal = parseInt(document.getElementById("decimal").value);
-            const bitLength = parseInt(document.getElementById("bitLength").value);
+        document.getElementById('calcForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            calculate();
+        });
 
-            if (isNaN(decimal) || isNaN(bitLength) || bitLength <= 0) {
-                alert("Please enter valid numbers.");
+        function calculate() {
+            const factor1 = parseInt(document.getElementById('factor1').value);
+            const factor2 = parseInt(document.getElementById('factor2').value);
+
+            const binarySteps = document.getElementById('binarySteps');
+            const finalResult = document.getElementById('finalResult');
+
+            binarySteps.innerHTML = ''; // Clear previous steps
+            finalResult.style.display = 'none'; // Hide previous result
+
+            if (factor1 < factor2) {
+                finalResult.style.display = 'block';
+                finalResult.textContent = 'Error: Subtraction cannot result in a negative value.';
                 return;
             }
 
-            const twosComplementBinary = convertToTwosComplement(decimal, bitLength);
-            const resultDiv = document.getElementById("resultDisplay");
+            const padBinary = (number, bits = 4) => number.toString(2).padStart(bits,'0');
 
-            resultDiv.innerHTML = `
-                Decimal: ${decimal}<br>
-                Bit Length: ${bitLength}<br>
-                Two's Complement: ${twosComplementBinary} (Binary)
-            `;
-        });
+            const binaryFactor1 = padBinary(factor1);
+            const binaryFactor2 = padBinary(factor2);
+            const binaryDifference = padBinary(factor1 - factor2);
 
-        function convertToTwosComplement(number, bitLength) {
-            if (number < 0) {
-                let binary = Math.abs(number).toString(2);
-                binary = binary.padStart(bitLength, '0');
-                let inverted = binary.replace(/0/g, 'x').replace(/1/g, '0').replace(/x/g, '1');
-                let twosComplement = (parseInt(inverted, 2) + 1).toString(2);
-                return twosComplement.padStart(bitLength, '0').slice(-bitLength);
-            } else {
-                return number.toString(2).padStart(bitLength, '0').slice(-bitLength);
-            }
+            const row1 = `<tr><td>${factor1}</td><td>${binaryFactor1}</td></tr>`;
+            const row2 = `<tr><td>${factor2}</td><td>${binaryFactor2}</td></tr>`;
+            const resultRow = `<tr><td>Result</td><td>${binaryFactor1} - ${binaryFactor2} = ${binaryDifference}</td></tr>`;
+
+            binarySteps.insertAdjacentHTML('beforeend', row1);
+            binarySteps.insertAdjacentHTML('beforeend', row2);
+            binarySteps.insertAdjacentHTML('beforeend', resultRow);
+
+            finalResult.style.display = 'block';
+            finalResult.textContent = `Final Binary: ${binaryDifference} (Decimal: ${factor1 - factor2})`;
         }
     </script>
-
 </body>
 </html>

@@ -5,10 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Booth's Algorithm Multiplier</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/wingcss"/>
-    <link rel="stylesheet" href="https://grahn.us/css/style.css"/>
-    <script src="https://kit.fontawesome.com/42e67c05e1.js"></script>
-
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -24,42 +20,26 @@
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-        h1 {
+        h1, h5 {
             text-align: center;
-            color: #333;
-        }
-        h5 {
-            text-align: center;
-            color: #666;
         }
         .form-group {
-            display: flex;
-            flex-direction: column;
             margin-bottom: 1rem;
         }
-        input[type="text"], input[type="number"] {
+        input[type="number"] {
             width: 100%;
             padding: 10px;
-            margin: 5px 0;
             border: 1px solid #ccc;
             border-radius: 4px;
-            transition: border 0.3s;
         }
-        input[type="text"]:focus, input[type="number"]:focus {
-            border: 2px solid #007bff;
-        }
-        #ok {
+        input[type="submit"] {
             background-color: #007bff;
             color: white;
             border: none;
             padding: 10px;
+            width: 100%;
             border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s;
-        }
-        #ok:hover {
-            transform: scale(1.05);
-            background-color: #0056b3;
         }
         .back-button {
             background-color: #6c757d;
@@ -91,43 +71,22 @@
         th {
             background-color: #f2f2f2;
         }
-        .result {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 1.2em;
-        }
-        @media (max-width: 600px) {
-            .form-group {
-                flex-direction: column;
-            }
-            input[type="text"], input[type="number"], #ok {
-                width: 100%;
-            }
-        }
     </style>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-    <script src="script.js"></script>
 </head>
 <body>
-
     <div class="container">
         <h1>Binary Multiplication Booth's Algorithm</h1>
-        <h5>Input two integers into the form and click 'Multiply' to see Booth's algorithm in action!</h5>
-
-        <form>
+        <h5>Enter two integers and click 'Multiply' to simulate Booth's Algorithm.</h5>
+        <form id="boothForm">
             <div class="form-group">
-                <input type="number" name="factor1" placeholder="Enter First Number" required/> 
+                <input type="number" id="factor1" placeholder="Enter First Number" required>
             </div>
             <div class="form-group">
-                <input type="number" name="factor2" placeholder="Enter Second Number" required/>
+                <input type="number" id="factor2" placeholder="Enter Second Number" required>
             </div>
- <div class="form-group">
-                <input type="submit" name="multiply" value="Multiply" id="ok"/>
-            </div>
+            <input type="submit" value="Multiply">
         </form>
-
-        <table id="results" class="table">
+        <table id="results">
             <thead>
                 <tr>
                     <th>A</th>
@@ -137,205 +96,115 @@
                     <th>Log</th>
                 </tr>
             </thead>
-            <tbody>
-            </tbody>
+            <tbody></tbody>
         </table>
-        <div class="result" id="finalResult"></div>
-        <button class="back-button" onclick="window.location.href='default.html'">Back to Home</button>
+        <table id="finalResultTable">
+            <thead>
+                <tr>
+                    <th>Binary Result</th>
+                    <th>Decimal Result</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <button class="back-button" onclick="window.location.href='Option.html'">Back</button>
     </div>
 
-    <!-- <script>
-        $(document).ready(function() {
-            $('input[name="multiply"]').click(function(e) {
-                e.preventDefault();
-                multiply();
-            });
-        });
-        
-        function multiply() {
-            var results = $('#results tbody');
-            $('#finalResult').html(''); // Clear previous final result
-            results.html('');
-            
-            var factor1 = parseInt($('input[name="factor1"]').val());
-            var factor2 = parseInt($('input[name="factor2"]').val());
-            
-            if(Math.abs(factor1) > Math.abs(factor2)) {
-                var bitLength = Math.log(Math.abs(factor1)) / Math.log(2);
-            } else {
-                var bitLength = Math.log(Math.abs(factor2)) / Math.log(2);
-            }
-            bitLength++;
-            
-            var a = pad(0, bitLength);
-            var q = twosComplement(factor2, bitLength);
-            var q1 = '0';
-            var m = twosComplement(factor1, bitLength);
-            
-            writeRow(results, a, q, q1, m, 'Populate Data');
-        
-            for(var i = 0; i < bitLength; i++) {
-                if(q1 == '0' && q.substring(q.length - 1) == '1') {
-                    var tempA = parseInt(a, 2);
-                    var tempM = parseInt(m, 2);
-                    tempA = tempA - tempM;
-                    a = twosComplement(tempA, bitLength);
-                    writeRow(results, a, q, q1, m, 'A = A - M');
-                } else if(q1 == '1' && q.substring(q.length - 1) == '0') {
-                    var tempA = parseInt(a, 2);
-                    var tempM = parseInt(m, 2);
-                    tempA = tempA + tempM;
-                    a = twosComplement(tempA, bitLength);
-                    a = a.substring(a.length - bitLength);
-                    writeRow(results, a, q, q1, m, 'A = A + M');
-                }
-        
-                q1 = q.substring(q.length - 1);
-                q = a.charAt(a.length - 1) + q.substring(0, q.length - 1);
-                a = a.charAt(0) + a.substring(0, a.length - 1);
-                writeRow(results, a, q, q1, m, 'Shift');
+    <script>
+        document.getElementById("boothForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const factor1 = parseInt(document.getElementById("factor1").value);
+            const factor2 = parseInt(document.getElementById("factor2").value);
+
+            if (isNaN(factor1) || isNaN(factor2)) {
+                alert("Please enter valid integers.");
+                return;
             }
 
-            // Calculate final result
-            var finalResultDecimal = parseInt(a, 2) + (parseInt(q, 2) * (q1 === '1' ? -1 : 1));
-            var finalResultBinary = (finalResultDecimal >>> 0).toString(2); // Unsigned right shift for binary representation
-            $('#finalResult').html('Final Result: ' + finalResultBinary + ' (Binary), ' + finalResultDecimal + ' (Decimal)');
-        }
-        
-        function twosComplement(number, bitLength) {
-            if(number < 0) {
-                var bin = number.toString(2);
-                bin = pad(bin.substring(1, bin.length), bitLength);
-                bin = bin.replace(/1/g, 'x');
-                bin = bin.replace(/0/g, '1');
-                bin = bin.replace(/x/g, '0');
-                number = parseInt(bin, 2) + 1;
-                bin = number.toString(2);
-                return pad(bin, bitLength);
-            } else {
-                return pad(number.toString(2), bitLength);
-            }
-        }
-        
-        function writeRow(table, a, q, q1, m, log) {
-            table.append('<tr><td>'+ a +'</td><td>'+ q +'</td><td>'+ q1 +'</td><td>'+ m +'</td><td>'+ log +'</td></tr>')
-        }
-        
-        function pad(number, length) {
-            var str = '' + number;
-            while (str.length < length) {
-                str = '0' + str;
-            }
-            return str;
-        }
-    </script> -->
-<script>
-    $(document).ready(function () {
-        $('input[name="multiply"]').click(function (e) {
-            e.preventDefault();
-            multiply();
+            boothAlgorithm(factor1, factor2);
         });
-    });
-    
-    function multiply() {
-        const results = $('#results tbody');
-        $('#finalResult').html(''); // Clear previous results
-        results.html(''); // Clear table
-    
-        const factor1 = parseInt($('input[name="factor1"]').val());
-        const factor2 = parseInt($('input[name="factor2"]').val());
-    
-        // Validate inputs
-        if (isNaN(factor1) || isNaN(factor2)) {
-            alert('Please enter valid integers.');
-            return;
-        }
-    
-        if (factor1 === 0 || factor2 === 0) {
-            $('#finalResult').html('Final Result: 0 (Binary), 0 (Decimal)');
-            return;
-        }
-    
-        const bitLength = Math.max(
-            Math.ceil(Math.log2(Math.abs(factor1) + 1)),
-            Math.ceil(Math.log2(Math.abs(factor2) + 1))
-        ) + 1; // Extra bit for sign
-    
-        let A = pad(0, bitLength);
-        let Q = twosComplement(factor2, bitLength);
-        let Q1 = '0';
-        const M = twosComplement(factor1, bitLength);
-    
-        writeRow(results, A, Q, Q1, M, 'Initialization');
-    
-        for (let i = 0; i < bitLength; i++) {
-            // Booth's logic: Check Q[0] and Q1
-            if (Q[Q.length - 1] === '1' && Q1 === '0') {
-                A = addBinary(A, twosComplement(-factor1, bitLength));
-                writeRow(results, A, Q, Q1, M, 'A = A - M');
-            } else if (Q[Q.length - 1] === '0' && Q1 === '1') {
-                A = addBinary(A, twosComplement(factor1, bitLength));
-                writeRow(results, A, Q, Q1, M, 'A = A + M');
+
+        function boothAlgorithm(factor1, factor2) {
+            const tableBody = document.getElementById("results").querySelector("tbody");
+            const finalResultBody = document.getElementById("finalResultTable").querySelector("tbody");
+
+            tableBody.innerHTML = ""; // Clear previous results
+            finalResultBody.innerHTML = ""; // Clear previous results
+
+            const bitLength = Math.max(
+                Math.ceil(Math.log2(Math.abs(factor1) + 1)),
+                Math.ceil(Math.log2(Math.abs(factor2) + 1))
+            ) + 1;
+
+            let A = "0".repeat(bitLength);
+            let Q = toBinary(factor2, bitLength);
+            let Q1 = "0";
+            const M = toBinary(factor1, bitLength);
+
+            appendRow(tableBody, A, Q, Q1, M, "Initialization");
+
+            for (let i = 0; i < bitLength; i++) {
+                if (Q[Q.length - 1] === "1" && Q1 === "0") {
+                    A = addBinary(A, twosComplement(M, bitLength));
+                    appendRow(tableBody, A, Q, Q1, M, "A = A - M");
+                } else if (Q[Q.length - 1] === "0" && Q1 === "1") {
+                    A = addBinary(A, M);
+                    appendRow(tableBody, A, Q, Q1, M, "A = A + M");
+                }
+
+                // Arithmetic Right Shift
+                Q1 = Q[Q.length - 1];
+                Q = A[A.length - 1] + Q.slice(0, -1);
+                A = A[0] + A.slice(0, -1);
+
+                appendRow(tableBody, A, Q, Q1, M, "Arithmetic Right Shift");
             }
-    
-            // Perform arithmetic right shift
-            Q1 = Q[Q.length - 1];
-            Q = A[A.length - 1] + Q.slice(0, -1);
-            A = A[0] + A.slice(0, -1);
-            writeRow(results, A, Q, Q1, M, 'Arithmetic Right Shift');
+
+            const resultBinary = A + Q;
+            const resultDecimal = parseBinary(resultBinary);
+            finalResultBody.innerHTML = `<tr>
+                <td>${resultBinary} (Binary)</td>
+                <td>${resultDecimal} (Decimal)</td>
+            </tr>`;
         }
-    
-        // Concatenate A and Q to get the result
-        const finalBinary = A + Q;
-        const finalDecimal = parseTwosComplement(finalBinary);
-    
-        $('#finalResult').html(
-            `Final Result: ${finalBinary} (Binary), ${finalDecimal} (Decimal)`
-        );
-    }
-    
-    function twosComplement(number, bitLength) {
-        if (number < 0) {
-            let bin = Math.abs(number).toString(2);
-            bin = pad(bin, bitLength);
-            bin = bin.replace(/0/g, 'x').replace(/1/g, '0').replace(/x/g, '1');
-            return pad((parseInt(bin, 2) + 1).toString(2), bitLength);
-        } else {
-            return pad(number.toString(2), bitLength);
+
+        function toBinary(number, bitLength) {
+            const binary = Math.abs(number).toString(2).padStart(bitLength, "0");
+            return number < 0 ? twosComplement(binary, bitLength) : binary;
         }
-    }
-    
-    function parseTwosComplement(binary) {
-        const isNegative = binary[0] === '1';
-        if (isNegative) {
-            const inverted = binary
-                .split('')
-                .map((bit) => (bit === '1' ? '0' : '1'))
-                .join('');
-            return -(parseInt(inverted, 2) + 1);
+
+        function twosComplement(binary, bitLength) {
+            let inverted = binary.split("").map(b => (b === "1" ? "0" : "1")).join("");
+            return addBinary(inverted, "1".padStart(bitLength, "0")).slice(-bitLength);
         }
-        return parseInt(binary, 2);
-    }
-    
-    function addBinary(bin1, bin2) {
-        const sum = (parseInt(bin1, 2) + parseInt(bin2, 2)).toString(2);
-        return pad(sum, bin1.length).slice(-bin1.length); // Ensure consistent length
-    }
-    
-    function writeRow(table, a, q, q1, m, log) {
-        table.append(
-            `<tr><td>${a}</td><td>${q}</td><td>${q1}</td><td>${m}</td><td>${log}</td></tr>`
-        );
-    }
-    
-    function pad(number, length) {
-        let str = number.toString();
-        while (str.length < length) {
-            str = '0' + str;
+
+        function addBinary(bin1, bin2) {
+            let carry = 0, result = [];
+            for (let i = bin1.length - 1; i >= 0; i--) {
+                const sum = parseInt(bin1[i]) + parseInt(bin2[i]) + carry;
+                result.unshift(sum % 2);
+                carry = Math.floor(sum / 2);
+            }
+            return result.join("");
         }
-        return str;
-    }
-    
-</script>
+
+        function parseBinary(binary) {
+            if (binary[0] === "1") {
+                return -parseInt(twosComplement(binary, binary.length), 2);
+            }
+            return parseInt(binary, 2);
+        }
+
+        function appendRow(tableBody, A, Q, Q1, M, log) {
+            const row = `<tr>
+                <td>${A}</td>
+                <td>${Q}</td>
+                <td>${Q1}</td>
+                <td>${M}</td>
+                <td>${log}</td>
+            </tr>`;
+            tableBody.innerHTML += row;
+        }
+    </script>
 </body>
 </html>
